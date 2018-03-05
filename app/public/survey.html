@@ -162,7 +162,7 @@
         </div>
         <div class="modal-body">
           <h2 id="match-name"></h2>
-          <img id="match-img" src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/6/005/064/1bd/3435aa3.jpg" alt="">
+          <img id="match-img" style="height:auto;width:500px;" src="https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/6/005/064/1bd/3435aa3.jpg" alt="">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -173,9 +173,34 @@
 </div>
 
 <script type="text/javascript">
-    $("#submit").on("click", function() {
-        
+$("#submit").on("click", function() {
+    event.preventDefault();
+
+    var emptyCounter = 0;
+    $(".form-control").each(function() {
+        if($(this).val() === "") {
+            emptyCounter ++;
+        }
     })
+
+    if(emptyCounter !== 0) {
+        alert("Please fill out everything!");
+    } else {
+        var userInput = {
+            name: $("#name").val().trim(),
+            photo: $("#photo").val().trim(),
+            scores: [$("#q1").val(), $("#q2").val(), $("#q3").val(), $("#q4").val(), $("#q5").val(), $("#q6").val(), $("#q7").val(), $("#q8").val(), $("#q9").val(), $("#q10").val(), ]
+        }
+
+        var currentURL = window.location.origin;
+
+        $.post(currentURL + "/api/friends", userInput, function(data) {
+            $("#match-name").text(data.name);
+            $("#match-img").attr("src", data.photo);
+            $("#results-modal").modal("toggle");
+        })
+    }
+});
 </script>
 
 </body>
